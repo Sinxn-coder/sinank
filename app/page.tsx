@@ -365,7 +365,6 @@ const InteractiveTerminal = () => {
                 onKeyDown={handleKeyDown}
                 spellCheck="false"
                 autoComplete="off"
-                autoFocus
                 size={Math.max(input.length + 1, 1)}
               />
               {suggestion && (
