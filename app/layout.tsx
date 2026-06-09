@@ -4,6 +4,9 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: "Sinan K | Developer Portfolio",
   description: "Portfolio of Sinan K, Full Stack & App Developer.",
+  icons: {
+    icon: "/me.webp",
+  },
 };
 
 export default function RootLayout({
