@@ -497,6 +497,11 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      <a href="https://wa.me/919846170136" target="_blank" rel="noopener noreferrer" className="floating-whatsapp">
+        <FaWhatsapp />
+        <span className="whatsapp-tooltip">Contact Us</span>
+      </a>
     </>
   );
 }
