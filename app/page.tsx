@@ -202,27 +202,36 @@ export default function Home() {
           el.classList.remove('node-active');
         }
       });
-
-      // Projects horizontal scroll logic
-      if (projectsSectionRef.current && projectsTrackRef.current) {
-        const rect = projectsSectionRef.current.getBoundingClientRect();
-        const scrollProgress = -rect.top / (rect.height - window.innerHeight);
-        
-        if (scrollProgress >= 0 && scrollProgress <= 1) {
-          const trackWidth = projectsTrackRef.current.scrollWidth;
-          const windowWidth = window.innerWidth;
-          const maxTranslate = trackWidth - windowWidth + (windowWidth * 0.1);
-          projectsTrackRef.current.style.transform = `translateX(-${maxTranslate * scrollProgress}px)`;
-        } else if (scrollProgress < 0) {
-          projectsTrackRef.current.style.transform = 'translateX(0)';
-        }
-      }
     };
     
     window.addEventListener('scroll', handleScroll, { passive: true });
     handleScroll();
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  // Projects horizontal scroll — driven by scroll progress
+  useEffect(() => {
+    if (isMobile) return;
+    const section = projectsSectionRef.current;
+    const track = projectsTrackRef.current;
+    if (!section || !track) return;
+
+    const handleScroll = () => {
+      const rect = section.getBoundingClientRect();
+      const scrollableHeight = rect.height - window.innerHeight; // 300vh
+      const scrolled = -rect.top;
+      const progress = Math.min(Math.max(scrolled / scrollableHeight, 0), 1);
+
+      const maxTranslate = track.scrollWidth - window.innerWidth;
+      track.style.transform = `translateX(-${maxTranslate * progress}px)`;
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll();
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, [isMobile]);
 
   useEffect(() => {
     const observer = new IntersectionObserver((entries) => {
