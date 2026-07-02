@@ -1,9 +1,13 @@
 import type { Metadata } from "next";
+import { Inter, Space_Grotesk } from "next/font/google";
 import "./globals.css";
 
+const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
+const spaceGrotesk = Space_Grotesk({ subsets: ["latin"], variable: "--font-space-grotesk" });
+
 export const metadata: Metadata = {
-  title: "Sinan K | Developer Portfolio",
-  description: "Portfolio of Sinan K, Full Stack & App Developer.",
+  title: "Sinan K | Professional Portfolio",
+  description: "Full Stack Developer Portfolio of Sinan K",
   icons: {
     icon: "/me.webp",
   },
@@ -16,12 +20,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet" />
-      </head>
-      <body>
+      <body className={`${inter.variable} ${spaceGrotesk.variable}`}>
         {children}
       </body>
     </html>

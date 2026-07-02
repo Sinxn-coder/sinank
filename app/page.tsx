@@ -6,50 +6,8 @@ import {
 import {
   SiTypescript, SiNextdotjs, SiTailwindcss, SiMongodb, SiPostgresql, SiExpress, SiFigma, SiFramer, SiMysql, SiFirebase, SiSwift, SiGo, SiFlutter, SiVuedotjs, SiAngular, SiGraphql, SiPrisma, SiRedis, SiSupabase, SiRedux, SiVercel, SiGooglecloud, SiExpo, SiAndroidstudio, SiElectron, SiIonic, SiKotlin
 } from "react-icons/si";
-
-const roles = [
-  "Web Developer",
-  "Full Stack Developer",
-  "App Developer",
-  "Software Developer"
-];
-
-function Typewriter({ roles }: { roles: string[] }) {
-  const [currentText, setCurrentText] = useState('');
-  const [isDeleting, setIsDeleting] = useState(false);
-  const [roleIndex, setRoleIndex] = useState(0);
-  const [typeSpeed, setTypeSpeed] = useState(100);
-
-  useEffect(() => {
-    let timer: NodeJS.Timeout;
-
-    const currentRole = roles[roleIndex];
-
-    if (isDeleting) {
-      timer = setTimeout(() => {
-        setCurrentText(currentRole.substring(0, currentText.length - 1));
-        setTypeSpeed(50);
-      }, typeSpeed);
-    } else {
-      timer = setTimeout(() => {
-        setCurrentText(currentRole.substring(0, currentText.length + 1));
-        setTypeSpeed(100);
-      }, typeSpeed);
-    }
-
-    if (!isDeleting && currentText === currentRole) {
-      timer = setTimeout(() => setIsDeleting(true), 2000);
-    } else if (isDeleting && currentText === '') {
-      setIsDeleting(false);
-      setRoleIndex((prev) => (prev + 1) % roles.length);
-      setTypeSpeed(500);
-    }
-
-    return () => clearTimeout(timer);
-  }, [currentText, isDeleting, roleIndex, typeSpeed, roles]);
-
-  return <span className="dynamic-text">{currentText}</span>;
-}
+import { InteractiveTerminal } from '../components/InteractiveTerminal';
+import { Hero } from '../components/Hero';
 
 const skillCategories = [
   {
@@ -115,34 +73,28 @@ const skillCategories = [
 
 const projectsData = [
   {
-    title: "Admin Dashboard",
-    description: "A comprehensive analytics and management dashboard for tracking users, revenue, and system metrics in real-time.",
-    icon: <FaChartLine />,
-    tags: ["Next.js", "Node.js", "PostgreSQL", "AWS"]
-  },
-  {
-    title: "Global E-Commerce Platform",
-    description: "A highly scalable marketplace connecting international sellers with buyers, featuring complex payment routing and multi-currency support.",
+    title: "Etriq App Store",
+    description: "A premium, centralized marketplace for discovering and managing enterprise-grade applications, built with a stunning Liquid Glass UI.",
     icon: <FaShoppingCart />,
-    tags: ["React", "Express", "MongoDB", "Stripe"]
+    tags: ["React", "Next.js", "Stripe", "Framer Motion"]
   },
   {
-    title: "Healthcare System",
-    description: "A secure, HIPAA-compliant patient management system for medical professionals to track patient records and appointments.",
+    title: "Etriq LMS",
+    description: "A comprehensive Learning Management System designed for modern educational institutions with real-time video and course tracking.",
     icon: <FaHospital />,
-    tags: ["Vue.js", "Python", "Django", "PostgreSQL"]
+    tags: ["Next.js", "Node.js", "PostgreSQL", "WebRTC"]
   },
   {
-    title: "Real Estate Portal",
-    description: "An interactive property listing platform with advanced filtering, map integration, and virtual tour capabilities.",
-    icon: <FaBuilding />,
-    tags: ["React Native", "Firebase", "Google Maps API"]
+    title: "MiniBakes",
+    description: "A delightful e-commerce platform for a boutique bakery, featuring custom cake orders, secure checkout, and inventory management.",
+    icon: <FaShoppingCart />,
+    tags: ["React", "Next.js", "Tailwind CSS", "Stripe"]
   },
   {
-    title: "Social Media Platform",
-    description: "A modern social application featuring real-time messaging, content sharing, and personalized feeds.",
-    icon: <FaMobileAlt />,
-    tags: ["Flutter", "Go", "Redis", "Docker"]
+    title: "PricePilot",
+    description: "An AI-powered dynamic pricing engine that tracks market trends and competitor data to optimize product pricing in real-time.",
+    icon: <FaChartLine />,
+    tags: ["React", "Python", "TensorFlow", "AWS"]
   }
 ];
 
@@ -199,184 +151,7 @@ const ProjectCard = ({ project }: { project: any }) => {
     </div>
   );
 };
-const TypewriterText = ({ text, bodyRef }: { text: React.ReactNode, bodyRef: React.RefObject<HTMLDivElement | null> }) => {
-  const [displayedText, setDisplayedText] = useState('');
 
-  useEffect(() => {
-    if (typeof text !== 'string') return;
-    
-    let index = 0;
-    setDisplayedText(''); // Ensure it starts empty
-    
-    const interval = setInterval(() => {
-      // Use substring to avoid React StrictMode double-invocation bugs
-      setDisplayedText(text.substring(0, index + 1));
-      index++;
-      
-      // Auto scroll as it types
-      if (bodyRef.current) {
-        bodyRef.current.scrollTop = bodyRef.current.scrollHeight;
-      }
-      
-      if (index >= text.length) {
-        clearInterval(interval);
-      }
-    }, 10);
-    
-    return () => clearInterval(interval);
-  }, [text, bodyRef]);
-
-  if (typeof text !== 'string') {
-    return <span style={{ whiteSpace: 'pre-wrap' }}>{text}</span>;
-  }
-
-  return <span style={{ whiteSpace: 'pre-wrap' }}>{displayedText}</span>;
-};
-
-const COMMANDS = ['help', 'whoami', 'skills', 'contact', 'photo', 'clear', 'sudo rm -rf /'];
-
-const InteractiveTerminal = () => {
-  const [history, setHistory] = useState<{type: 'input' | 'output' | 'error' | 'image', text: string | React.ReactNode}[]>([
-    { type: 'output', text: 'Welcome to SK Terminal v1.0.0' },
-    { type: 'output', text: 'Type "help" to see a list of available commands.' }
-  ]);
-  const [input, setInput] = useState('');
-  const [suggestion, setSuggestion] = useState('');
-  const [isMobile, setIsMobile] = useState(false);
-  const bodyRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const handleResize = () => setIsMobile(window.innerWidth <= 768);
-    handleResize();
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
-
-  useEffect(() => {
-    if (bodyRef.current) {
-      bodyRef.current.scrollTop = bodyRef.current.scrollHeight;
-    }
-  }, [history]);
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const val = e.target.value;
-    setInput(val);
-    if (val.trim()) {
-      const match = COMMANDS.find(cmd => cmd.startsWith(val.toLowerCase()));
-      setSuggestion(match ? match.substring(val.length) : '');
-    } else {
-      setSuggestion('');
-    }
-  };
-
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Tab' && suggestion) {
-      e.preventDefault();
-      setInput(input + suggestion);
-      setSuggestion('');
-    }
-  };
-
-  const executeCommand = (cmdStr: string) => {
-    setSuggestion('');
-    const cmd = cmdStr.trim().toLowerCase();
-    
-    if (!cmd) return;
-    
-    const newHistory = [...history, { type: 'input', text: cmdStr }];
-    
-    switch (cmd) {
-      case 'help':
-        newHistory.push({ type: 'output', text: 'Available commands: \n  help    - Show this message\n  whoami  - Print user bio\n  skills  - List core technologies\n  contact - Print contact info\n  photo   - Show a photo of me\n  clear   - Clear terminal screen' });
-        break;
-      case 'whoami':
-        newHistory.push({ type: 'output', text: 'Sinan K\nA passionate multi-disciplinary developer building the future of the web and mobile applications.' });
-        break;
-      case 'skills':
-        newHistory.push({ type: 'output', text: 'Frontend: React, Next.js, Tailwind CSS\nBackend:  Node.js, Express, Go, Python\nMobile:   React Native, Flutter, Swift\nCloud:    AWS, Docker, Linux, Vercel' });
-        break;
-      case 'contact':
-        newHistory.push({ type: 'output', text: 'Phone:     +91 98461 70136\nWhatsApp:  +91 98461 70136\nEmail:     msinankavala786@gmail.com\nGitHub:    github.com/Sinxn-coder\nInstagram: instagram.com/sinan.avl\nStatus:    Open to new opportunities' });
-        break;
-      case 'clear':
-        setHistory([]);
-        setInput('');
-        return;
-      case 'photo':
-        newHistory.push({ type: 'image', text: '' });
-        break;
-      case 'sudo rm -rf /':
-        newHistory.push({ type: 'error', text: 'bash: permission denied: Nice try though! 😉' });
-        break;
-      default:
-        newHistory.push({ type: 'error', text: `Command not found: ${cmd}. Type "help" for a list of commands.` });
-    }
-    
-    setHistory(newHistory as any);
-    setInput('');
-    setSuggestion('');
-  };
-
-  const handleCommand = (e: React.FormEvent) => {
-    e.preventDefault();
-    executeCommand(input);
-  };
-
-  return (
-    <div className="terminal-container">
-      <div className="terminal-header">
-        <div className="terminal-buttons">
-          <span className="close-btn"></span>
-          <span className="min-btn"></span>
-          <span className="max-btn"></span>
-        </div>
-        <div className="terminal-title">guest@sk-portfolio:~</div>
-      </div>
-      <div className="terminal-body" ref={bodyRef} onClick={() => document.getElementById('terminal-input')?.focus()}>
-        {history.map((line, i) => (
-          <div key={i} className={`terminal-line ${line.type}`}>
-            {line.type === 'input' && <span className="prompt">guest@sk:~$ </span>}
-            {line.type === 'image' ? (
-              <img src="/me.webp" alt="Sinan" className="terminal-photo" />
-            ) : line.type === 'input' ? (
-              <span style={{ whiteSpace: 'pre-wrap' }}>{line.text}</span>
-            ) : (
-              <TypewriterText text={line.text} bodyRef={bodyRef} />
-            )}
-          </div>
-        ))}
-        {isMobile ? (
-          <div className="terminal-chips">
-            {COMMANDS.filter(c => c !== 'sudo rm -rf /').map(c => (
-              <button key={c} className="terminal-chip" onClick={() => executeCommand(c)}>
-                {c}
-              </button>
-            ))}
-          </div>
-        ) : (
-          <form onSubmit={handleCommand} className="terminal-input-line">
-            <span className="prompt">guest@sk:~$ </span>
-            <div className="terminal-input-wrapper">
-              <input 
-                id="terminal-input"
-                type="text" 
-                value={input} 
-                onChange={handleInputChange}
-                onKeyDown={handleKeyDown}
-                spellCheck="false"
-                autoComplete="off"
-                size={Math.max(input.length + 1, 1)}
-              />
-              {suggestion && (
-                <span className="terminal-suggestion">{suggestion}</span>
-              )}
-            </div>
-          </form>
-        )}
-      </div>
-    </div>
-  );
-};
 
 export default function Home() {
   const glassCardRef = useRef<HTMLDivElement>(null);
@@ -493,8 +268,6 @@ export default function Home() {
 
   return (
     <>
-      <div className="blob blob-1"></div>
-      <div className="blob blob-2"></div>
 
       <header className="header-container">
         <div className="logo">SK<span className="dot">.</span></div>
@@ -522,53 +295,7 @@ export default function Home() {
         </ul>
       </div>
 
-      <main className="hero-section">
-        <div className="hero-content animate-on-scroll">
-          <h2 className="greeting">Hello, I'm</h2>
-          <h1 className="name">Sinan K</h1>
-          <div className="role-container">
-            <span className="static-text">I am a </span>
-            <Typewriter roles={roles} />
-            <span className="cursor">|</span>
-          </div>
-          <p className="description">
-            Transforming ideas into exceptional digital experiences. I specialize in building robust, scalable applications across the full stack.
-          </p>
-          <div className="cta-buttons">
-            <a href="#projects" className="btn-primary">View My Work</a>
-            <a href="#contact" className="btn-secondary">Get In Touch</a>
-          </div>
-        </div>
-
-        <div
-          className="hero-visual animate-on-scroll"
-          ref={heroVisualRef}
-          onMouseMove={handleMouseMove}
-          onMouseLeave={handleMouseLeave}
-        >
-          <div className="glass-card" ref={glassCardRef}>
-            <div className="code-header">
-              <span className="circle red"></span>
-              <span className="circle yellow"></span>
-              <span className="circle green"></span>
-            </div>
-            <pre className="code-snippet"><code>
-              <span className="keyword">const</span> developer <span className="operator">=</span> {'{\n'}
-              {'  name: '}<span className="string">'Sinan K'</span>{',\n'}
-              {'  skills: [\n'}
-              {'    '}<span className="string">'Web Development'</span>{',\n'}
-              {'    '}<span className="string">'Full Stack'</span>{',\n'}
-              {'    '}<span className="string">'App Development'</span>{'\n'}
-              {'  ],\n'}
-              {'  hardWorker: '}<span className="boolean">true</span>{',\n'}
-              {'  buildAwesomeThings: '}<span className="keyword">function</span>{'() {\n'}
-              {'    '}<span className="keyword">return</span> <span className="string">'🚀'</span>{';\n'}
-              {'  }\n'}
-              {'}'};
-            </code></pre>
-          </div>
-        </div>
-      </main>
+      <Hero />
 
       <section id="about" className="about-section animate-on-scroll">
         <h2 className="section-title">About <span>Me</span></h2>
@@ -595,7 +322,7 @@ export default function Home() {
                 <span className="stat-label">Years Experience</span>
               </div>
               <div className="stat-item">
-                <span className="stat-number">20+</span>
+                <span className="stat-number">4+</span>
                 <span className="stat-label">Projects Completed</span>
               </div>
             </div>
