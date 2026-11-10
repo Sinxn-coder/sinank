@@ -1,775 +1,400 @@
 "use client";
-import { useEffect, useState, useRef } from 'react';
+
+import { useEffect, useState } from "react";
+import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
 import {
-  FaHtml5, FaCss3Alt, FaJs, FaReact, FaNodeJs, FaPython, FaJava, FaDocker, FaGitAlt, FaLinux, FaAws, FaInstagram, FaGithub, FaWhatsapp, FaEnvelope, FaChartLine, FaShoppingCart, FaHospital, FaBuilding, FaMobileAlt, FaPhoneAlt, FaBars, FaTimes
+  FaReact, FaNodeJs,
+  FaInstagram, FaWhatsapp,
+  FaBars, FaTimes, FaFileDownload
 } from "react-icons/fa";
 import {
-  SiTypescript, SiNextdotjs, SiTailwindcss, SiMongodb, SiPostgresql, SiExpress, SiFigma, SiFramer, SiMysql, SiFirebase, SiSwift, SiGo, SiFlutter, SiVuedotjs, SiAngular, SiGraphql, SiPrisma, SiRedis, SiSupabase, SiRedux, SiVercel, SiGooglecloud, SiExpo, SiAndroidstudio, SiElectron, SiIonic, SiKotlin
+  SiMongodb,
+  SiFlutter,
 } from "react-icons/si";
 
-const roles = [
-  "Web Developer",
-  "Full Stack Developer",
-  "App Developer",
-  "Software Developer"
+// -------------------------------------------------------------
+// COMPONENTS
+// -------------------------------------------------------------
+
+const rotatingDescriptions = [
+  "Welcome to a digital journey that transcends limits. Discover the artistry of scalable software captured in code.",
+  "Building robust Full Stack architectures that power modern web applications with seamless performance and scale.",
+  "Crafting beautiful, native-feeling mobile experiences with Flutter, delivering smooth animations on every screen."
 ];
 
-function Typewriter({ roles }: { roles: string[] }) {
-  const [currentText, setCurrentText] = useState('');
-  const [isDeleting, setIsDeleting] = useState(false);
-  const [roleIndex, setRoleIndex] = useState(0);
-  const [typeSpeed, setTypeSpeed] = useState(100);
+function RotatingText() {
+  const [index, setIndex] = useState(0);
 
   useEffect(() => {
-    let timer: NodeJS.Timeout;
+    const interval = setInterval(() => {
+      setIndex((prev) => (prev + 1) % rotatingDescriptions.length);
+    }, 5000);
+    return () => clearInterval(interval);
+  }, []);
 
-    const currentRole = roles[roleIndex];
-
-    if (isDeleting) {
-      timer = setTimeout(() => {
-        setCurrentText(currentRole.substring(0, currentText.length - 1));
-        setTypeSpeed(50);
-      }, typeSpeed);
-    } else {
-      timer = setTimeout(() => {
-        setCurrentText(currentRole.substring(0, currentText.length + 1));
-        setTypeSpeed(100);
-      }, typeSpeed);
-    }
-
-    if (!isDeleting && currentText === currentRole) {
-      timer = setTimeout(() => setIsDeleting(true), 2000);
-    } else if (isDeleting && currentText === '') {
-      setIsDeleting(false);
-      setRoleIndex((prev) => (prev + 1) % roles.length);
-      setTypeSpeed(500);
-    }
-
-    return () => clearTimeout(timer);
-  }, [currentText, isDeleting, roleIndex, typeSpeed, roles]);
-
-  return <span className="dynamic-text">{currentText}</span>;
+  return (
+    <div className="relative h-[84px] w-full max-w-[320px]">
+      <AnimatePresence mode="wait">
+        <motion.p
+          key={index}
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -10 }}
+          transition={{ duration: 0.5 }}
+          className="text-base text-right text-slate-600 font-medium leading-relaxed absolute top-0 right-0 w-full"
+        >
+          {rotatingDescriptions[index]}
+        </motion.p>
+      </AnimatePresence>
+    </div>
+  );
 }
 
-const skillCategories = [
-  {
-    title: "Frontend",
-    skills: [
-      { name: "React", icon: <FaReact color="#61DAFB" /> },
-      { name: "Next.js", icon: <SiNextdotjs color="#ffffff" /> },
-      { name: "Vue.js", icon: <SiVuedotjs color="#4FC08D" /> },
-      { name: "Angular", icon: <SiAngular color="#DD0031" /> },
-      { name: "TypeScript", icon: <SiTypescript color="#3178C6" /> },
-      { name: "JavaScript", icon: <FaJs color="#F7DF1E" /> },
-      { name: "HTML5", icon: <FaHtml5 color="#E34F26" /> },
-      { name: "CSS3", icon: <FaCss3Alt color="#1572B6" /> },
-      { name: "Tailwind CSS", icon: <SiTailwindcss color="#06B6D4" /> },
-      { name: "Framer Motion", icon: <SiFramer color="#0055FF" /> },
-    ]
-  },
-  {
-    title: "Backend & Database",
-    skills: [
-      { name: "Node.js", icon: <FaNodeJs color="#339933" /> },
-      { name: "Express.js", icon: <SiExpress color="#ffffff" /> },
-      { name: "Python", icon: <FaPython color="#3776AB" /> },
-      { name: "Java", icon: <FaJava color="#007396" /> },
-      { name: "Go", icon: <SiGo color="#00ADD8" /> },
-      { name: "GraphQL", icon: <SiGraphql color="#E10098" /> },
-      { name: "MongoDB", icon: <SiMongodb color="#47A248" /> },
-      { name: "PostgreSQL", icon: <SiPostgresql color="#4169E1" /> },
-      { name: "MySQL", icon: <SiMysql color="#4479A1" /> },
-      { name: "Redis", icon: <SiRedis color="#DC382D" /> },
-      { name: "Supabase", icon: <SiSupabase color="#3ECF8E" /> },
-      { name: "Prisma", icon: <SiPrisma color="#ffffff" /> },
-    ]
-  },
-  {
-    title: "App Development",
-    skills: [
-      { name: "React Native", icon: <FaReact color="#61DAFB" /> },
-      { name: "Flutter", icon: <SiFlutter color="#02569B" /> },
-      { name: "Swift", icon: <SiSwift color="#F05138" /> },
-      { name: "Kotlin", icon: <SiKotlin color="#7F52FF" /> },
-      { name: "Expo", icon: <SiExpo color="#ffffff" /> },
-      { name: "Android Studio", icon: <SiAndroidstudio color="#3DDC84" /> },
-      { name: "Ionic", icon: <SiIonic color="#3880FF" /> },
-      { name: "Electron", icon: <SiElectron color="#47848F" /> },
-    ]
-  },
-  {
-    title: "Tools & Cloud",
-    skills: [
-      { name: "Git", icon: <FaGitAlt color="#F05032" /> },
-      { name: "Docker", icon: <FaDocker color="#2496ED" /> },
-      { name: "AWS", icon: <FaAws color="#FF9900" /> },
-      { name: "Google Cloud", icon: <SiGooglecloud color="#4285F4" /> },
-      { name: "Linux", icon: <FaLinux color="#ffffff" /> },
-      { name: "Vercel", icon: <SiVercel color="#ffffff" /> },
-      { name: "Firebase", icon: <SiFirebase color="#FFCA28" /> },
-      { name: "Figma", icon: <SiFigma color="#F24E1E" /> },
-      { name: "Redux", icon: <SiRedux color="#764ABC" /> },
-    ]
-  }
-];
-
-const projectsData = [
-  {
-    title: "Admin Dashboard",
-    description: "A comprehensive analytics and management dashboard for tracking users, revenue, and system metrics in real-time.",
-    icon: <FaChartLine />,
-    tags: ["Next.js", "Node.js", "PostgreSQL", "AWS"]
-  },
-  {
-    title: "Global E-Commerce Platform",
-    description: "A highly scalable marketplace connecting international sellers with buyers, featuring complex payment routing and multi-currency support.",
-    icon: <FaShoppingCart />,
-    tags: ["React", "Express", "MongoDB", "Stripe"]
-  },
-  {
-    title: "Healthcare System",
-    description: "A secure, HIPAA-compliant patient management system for medical professionals to track patient records and appointments.",
-    icon: <FaHospital />,
-    tags: ["Vue.js", "Python", "Django", "PostgreSQL"]
-  },
-  {
-    title: "Real Estate Portal",
-    description: "An interactive property listing platform with advanced filtering, map integration, and virtual tour capabilities.",
-    icon: <FaBuilding />,
-    tags: ["React Native", "Firebase", "Google Maps API"]
-  },
-  {
-    title: "Social Media Platform",
-    description: "A modern social application featuring real-time messaging, content sharing, and personalized feeds.",
-    icon: <FaMobileAlt />,
-    tags: ["Flutter", "Go", "Redis", "Docker"]
-  }
-];
-
-const ProjectCard = ({ project }: { project: any }) => {
-  const cardRef = useRef<HTMLDivElement>(null);
-
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!cardRef.current) return;
-    // Only apply 3D effect on desktop (if user has a mouse)
-    if (window.innerWidth <= 768) return;
-    
-    const rect = cardRef.current.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-    
-    const centerX = rect.width / 2;
-    const centerY = rect.height / 2;
-    
-    // Calculate rotation (-5 to 5 degrees)
-    const rotateX = ((y - centerY) / centerY) * -5;
-    const rotateY = ((x - centerX) / centerX) * 5;
-    
-    cardRef.current.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
-    cardRef.current.style.transition = 'transform 0.1s ease-out';
-  };
-
-  const handleMouseLeave = () => {
-    if (!cardRef.current) return;
-    cardRef.current.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)';
-    cardRef.current.style.transition = 'transform 0.5s ease-out';
-  };
+function SocialIsland() {
+  const [hovered, setHovered] = useState<'wa' | 'ig' | null>(null);
 
   return (
-    <div 
-      className="project-card" 
-      ref={cardRef}
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
+    <div
+      className="absolute flex flex-col items-center justify-center"
+      onMouseLeave={() => setHovered(null)}
+      style={{
+        left: '15.1%',
+        top: '76%',
+        transform: 'translate(-50%, -50%)',
+        width: '60px',
+        height: '132px',
+        zIndex: 20,
+      }}
     >
-      <div className="project-image-container icon-mode">
-        <div className="project-icon-wrapper">
-          {project.icon}
-        </div>
-      </div>
-      <div className="project-content">
-        <h3 className="project-title">{project.title}</h3>
-        <p className="project-desc">{project.description}</p>
-        <div className="project-tags">
-          {project.tags.map((tag: string, i: number) => (
-            <span key={i} className="project-tag">{tag}</span>
-          ))}
-        </div>
+      <div className="relative w-full h-full">
+
+        {/* WhatsApp Background Pill */}
+        <motion.a
+          href="https://wa.me/919846170136" target="_blank" rel="noopener noreferrer"
+          onMouseEnter={() => setHovered('wa')}
+          animate={{
+            height: hovered === 'wa' ? '132px' : hovered === 'ig' ? '0px' : '60px',
+            opacity: hovered === 'ig' ? 0 : 1,
+          }}
+          transition={{ duration: 0.3, type: 'spring', bounce: 0.2 }}
+          className="absolute top-0 left-0 w-full bg-[#25D366] cursor-pointer overflow-hidden rounded-[30px] shadow-[0_8px_32px_rgba(37,211,102,0.5)]"
+        >
+          <div className="absolute top-0 left-0 w-full h-[60px] flex items-center justify-center pointer-events-none">
+            <FaWhatsapp size={26} className="text-white" />
+          </div>
+          <AnimatePresence>
+            {hovered === 'wa' && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="absolute top-[60px] left-0 w-full h-[72px] flex flex-col items-center justify-center pointer-events-none"
+              >
+                <span className="text-white text-xs font-bold tracking-[0.2em]" style={{ writingMode: 'vertical-rl', transform: 'rotate(180deg)' }}>OPEN</span>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </motion.a>
+
+        {/* Instagram Background Pill */}
+        <motion.a
+          href="https://instagram.com/sinan.avl" target="_blank" rel="noopener noreferrer"
+          onMouseEnter={() => setHovered('ig')}
+          animate={{
+            height: hovered === 'ig' ? '132px' : hovered === 'wa' ? '0px' : '60px',
+            opacity: hovered === 'wa' ? 0 : 1,
+          }}
+          transition={{ duration: 0.3, type: 'spring', bounce: 0.2 }}
+          className="absolute bottom-0 left-0 w-full bg-gradient-to-tr from-[#f09433] via-[#dc2743] to-[#bc1888] cursor-pointer overflow-hidden rounded-[30px] shadow-[0_8px_32px_rgba(220,39,67,0.5)]"
+        >
+          <AnimatePresence>
+            {hovered === 'ig' && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="absolute bottom-[60px] left-0 w-full h-[72px] flex flex-col items-center justify-center pointer-events-none"
+              >
+                <span className="text-white text-xs font-bold tracking-[0.2em]" style={{ writingMode: 'vertical-rl', transform: 'rotate(180deg)' }}>OPEN</span>
+              </motion.div>
+            )}
+          </AnimatePresence>
+          <div className="absolute bottom-0 left-0 w-full h-[60px] flex items-center justify-center pointer-events-none">
+            <FaInstagram size={24} className="text-white" />
+          </div>
+        </motion.a>
+
       </div>
     </div>
   );
-};
-const TypewriterText = ({ text, bodyRef }: { text: React.ReactNode, bodyRef: React.RefObject<HTMLDivElement | null> }) => {
-  const [displayedText, setDisplayedText] = useState('');
+}
 
-  useEffect(() => {
-    if (typeof text !== 'string') return;
-    
-    let index = 0;
-    setDisplayedText(''); // Ensure it starts empty
-    
-    const interval = setInterval(() => {
-      // Use substring to avoid React StrictMode double-invocation bugs
-      setDisplayedText(text.substring(0, index + 1));
-      index++;
-      
-      // Auto scroll as it types
-      if (bodyRef.current) {
-        bodyRef.current.scrollTop = bodyRef.current.scrollHeight;
-      }
-      
-      if (index >= text.length) {
-        clearInterval(interval);
-      }
-    }, 10);
-    
-    return () => clearInterval(interval);
-  }, [text, bodyRef]);
-
-  if (typeof text !== 'string') {
-    return <span style={{ whiteSpace: 'pre-wrap' }}>{text}</span>;
-  }
-
-  return <span style={{ whiteSpace: 'pre-wrap' }}>{displayedText}</span>;
-};
-
-const COMMANDS = ['help', 'whoami', 'skills', 'contact', 'photo', 'clear', 'sudo rm -rf /'];
-
-const InteractiveTerminal = () => {
-  const [history, setHistory] = useState<{type: 'input' | 'output' | 'error' | 'image', text: string | React.ReactNode}[]>([
-    { type: 'output', text: 'Welcome to SK Terminal v1.0.0' },
-    { type: 'output', text: 'Type "help" to see a list of available commands.' }
-  ]);
-  const [input, setInput] = useState('');
-  const [suggestion, setSuggestion] = useState('');
-  const [isMobile, setIsMobile] = useState(false);
-  const bodyRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const handleResize = () => setIsMobile(window.innerWidth <= 768);
-    handleResize();
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
-
-  useEffect(() => {
-    if (bodyRef.current) {
-      bodyRef.current.scrollTop = bodyRef.current.scrollHeight;
-    }
-  }, [history]);
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const val = e.target.value;
-    setInput(val);
-    if (val.trim()) {
-      const match = COMMANDS.find(cmd => cmd.startsWith(val.toLowerCase()));
-      setSuggestion(match ? match.substring(val.length) : '');
-    } else {
-      setSuggestion('');
-    }
-  };
-
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Tab' && suggestion) {
-      e.preventDefault();
-      setInput(input + suggestion);
-      setSuggestion('');
-    }
-  };
-
-  const executeCommand = (cmdStr: string) => {
-    setSuggestion('');
-    const cmd = cmdStr.trim().toLowerCase();
-    
-    if (!cmd) return;
-    
-    const newHistory = [...history, { type: 'input', text: cmdStr }];
-    
-    switch (cmd) {
-      case 'help':
-        newHistory.push({ type: 'output', text: 'Available commands: \n  help    - Show this message\n  whoami  - Print user bio\n  skills  - List core technologies\n  contact - Print contact info\n  photo   - Show a photo of me\n  clear   - Clear terminal screen' });
-        break;
-      case 'whoami':
-        newHistory.push({ type: 'output', text: 'Sinan K\nA passionate multi-disciplinary developer building the future of the web and mobile applications.' });
-        break;
-      case 'skills':
-        newHistory.push({ type: 'output', text: 'Frontend: React, Next.js, Tailwind CSS\nBackend:  Node.js, Express, Go, Python\nMobile:   React Native, Flutter, Swift\nCloud:    AWS, Docker, Linux, Vercel' });
-        break;
-      case 'contact':
-        newHistory.push({ type: 'output', text: 'Phone:     +91 98461 70136\nWhatsApp:  +91 98461 70136\nEmail:     msinankavala786@gmail.com\nGitHub:    github.com/Sinxn-coder\nInstagram: instagram.com/sinan.avl\nStatus:    Open to new opportunities' });
-        break;
-      case 'clear':
-        setHistory([]);
-        setInput('');
-        return;
-      case 'photo':
-        newHistory.push({ type: 'image', text: '' });
-        break;
-      case 'sudo rm -rf /':
-        newHistory.push({ type: 'error', text: 'bash: permission denied: Nice try though! 😉' });
-        break;
-      default:
-        newHistory.push({ type: 'error', text: `Command not found: ${cmd}. Type "help" for a list of commands.` });
-    }
-    
-    setHistory(newHistory as any);
-    setInput('');
-    setSuggestion('');
-  };
-
-  const handleCommand = (e: React.FormEvent) => {
-    e.preventDefault();
-    executeCommand(input);
-  };
+function ResumeIsland() {
+  const [hovered, setHovered] = useState(false);
 
   return (
-    <div className="terminal-container">
-      <div className="terminal-header">
-        <div className="terminal-buttons">
-          <span className="close-btn"></span>
-          <span className="min-btn"></span>
-          <span className="max-btn"></span>
+    <div
+      className="absolute"
+      onMouseLeave={() => setHovered(false)}
+      style={{
+        left: '95.5%',
+        top: '15.8%',
+        zIndex: 20,
+      }}
+    >
+      <motion.a
+        href="/Sinan_K_Resume.pdf"
+        download="Sinan_K_Resume.pdf"
+        target="_blank"
+        rel="noopener noreferrer"
+        onMouseEnter={() => setHovered(true)}
+        animate={{
+          width: hovered ? '150px' : '60px',
+          backgroundColor: hovered ? '#2563EB' : '#0B0F14',
+        }}
+        transition={{ duration: 0.3, type: 'spring', bounce: 0.2 }}
+        className="absolute flex items-center overflow-hidden rounded-[30px] shadow-[0_8px_36px_rgba(0,0,0,0.7)] cursor-pointer"
+        style={{
+          height: '60px',
+          top: '-30px',
+          left: '-30px',
+        }}
+      >
+        <div className="w-[60px] h-[60px] shrink-0 flex items-center justify-center pointer-events-none">
+          <FaFileDownload size={24} className="text-white" />
         </div>
-        <div className="terminal-title">guest@sk-portfolio:~</div>
-      </div>
-      <div className="terminal-body" ref={bodyRef} onClick={() => document.getElementById('terminal-input')?.focus()}>
-        {history.map((line, i) => (
-          <div key={i} className={`terminal-line ${line.type}`}>
-            {line.type === 'input' && <span className="prompt">guest@sk:~$ </span>}
-            {line.type === 'image' ? (
-              <img src="/me.webp" alt="Sinan" className="terminal-photo" />
-            ) : line.type === 'input' ? (
-              <span style={{ whiteSpace: 'pre-wrap' }}>{line.text}</span>
-            ) : (
-              <TypewriterText text={line.text} bodyRef={bodyRef} />
-            )}
-          </div>
-        ))}
-        {isMobile ? (
-          <div className="terminal-chips">
-            {COMMANDS.filter(c => c !== 'sudo rm -rf /').map(c => (
-              <button key={c} className="terminal-chip" onClick={() => executeCommand(c)}>
-                {c}
-              </button>
-            ))}
-          </div>
-        ) : (
-          <form onSubmit={handleCommand} className="terminal-input-line">
-            <span className="prompt">guest@sk:~$ </span>
-            <div className="terminal-input-wrapper">
-              <input 
-                id="terminal-input"
-                type="text" 
-                value={input} 
-                onChange={handleInputChange}
-                onKeyDown={handleKeyDown}
-                spellCheck="false"
-                autoComplete="off"
-                size={Math.max(input.length + 1, 1)}
-              />
-              {suggestion && (
-                <span className="terminal-suggestion">{suggestion}</span>
-              )}
-            </div>
-          </form>
-        )}
-      </div>
+        <AnimatePresence>
+          {hovered && (
+            <motion.span
+              initial={{ opacity: 0, x: -10 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -10 }}
+              transition={{ duration: 0.2 }}
+              className="text-white text-sm font-bold tracking-widest whitespace-nowrap pr-4 pointer-events-none"
+            >
+              RESUME
+            </motion.span>
+          )}
+        </AnimatePresence>
+      </motion.a>
     </div>
   );
-};
+}
+
+// -------------------------------------------------------------
+// MAIN PAGE
+// -------------------------------------------------------------
 
 export default function Home() {
-  const glassCardRef = useRef<HTMLDivElement>(null);
-  const heroVisualRef = useRef<HTMLDivElement>(null);
-  const timelineSectionRef = useRef<HTMLDivElement>(null);
-  const educationRef = useRef<HTMLDivElement>(null);
-  const experienceRef = useRef<HTMLDivElement>(null);
-  const projectsSectionRef = useRef<HTMLDivElement>(null);
-  const projectsTrackRef = useRef<HTMLDivElement>(null);
-  const [educationProgress, setEducationProgress] = useState(0);
-  const [experienceProgress, setExperienceProgress] = useState(0);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
 
-  useEffect(() => {
-    const handleResize = () => {
-      setIsMobile(window.innerWidth <= 768);
-    };
-    handleResize(); // Initial check
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
+  const { scrollY } = useScroll();
+  const heroTextY = useTransform(scrollY, [0, 500], [0, 150]);
+  const heroImageY = useTransform(scrollY, [0, 600], [0, -100]);
+  const heroImageScale = useTransform(scrollY, [0, 600], [1, 0.9]);
 
   useEffect(() => {
     const handleScroll = () => {
-      // Timeline Logic
-      const windowHeight = window.innerHeight;
-      
-      if (educationRef.current) {
-        const rect = educationRef.current.getBoundingClientRect();
-        const scrollPosition = (windowHeight / 2) - rect.top;
-        let progress = scrollPosition > 0 ? (scrollPosition / rect.height) * 100 : 0;
-        setEducationProgress(Math.min(Math.max(progress, 0), 100));
-      }
-
-      if (experienceRef.current) {
-        const rect = experienceRef.current.getBoundingClientRect();
-        const scrollPosition = (windowHeight / 2) - rect.top;
-        let progress = scrollPosition > 0 ? (scrollPosition / rect.height) * 100 : 0;
-        setExperienceProgress(Math.min(Math.max(progress, 0), 100));
-      }
-
-      const nodes = Array.from(document.querySelectorAll('.timeline-item'));
-      nodes.forEach((el) => {
-        if (el.getBoundingClientRect().top + 20 <= windowHeight / 2) {
-          el.classList.add('node-active');
-        } else {
-          el.classList.remove('node-active');
-        }
-      });
-
-      // Projects horizontal scroll logic
-      if (projectsSectionRef.current && projectsTrackRef.current) {
-        const rect = projectsSectionRef.current.getBoundingClientRect();
-        const scrollProgress = -rect.top / (rect.height - window.innerHeight);
-        
-        if (scrollProgress >= 0 && scrollProgress <= 1) {
-          const trackWidth = projectsTrackRef.current.scrollWidth;
-          const windowWidth = window.innerWidth;
-          const maxTranslate = trackWidth - windowWidth + (windowWidth * 0.1);
-          projectsTrackRef.current.style.transform = `translateX(-${maxTranslate * scrollProgress}px)`;
-        } else if (scrollProgress < 0) {
-          projectsTrackRef.current.style.transform = 'translateX(0)';
-        }
-      }
+      setIsScrolled(window.scrollY > 20);
     };
-    
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    handleScroll();
+    window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  useEffect(() => {
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('is-visible');
-        }
-      });
-    }, { threshold: 0.1 });
-
-    document.querySelectorAll('.animate-on-scroll').forEach((el) => {
-      observer.observe(el);
-    });
-
-    return () => {
-      observer.disconnect();
-    };
-  }, []);
-
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!heroVisualRef.current || !glassCardRef.current) return;
-
-    const rect = heroVisualRef.current.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-
-    const centerX = rect.width / 2;
-    const centerY = rect.height / 2;
-
-    const rotateX = ((y - centerY) / centerY) * -10;
-    const rotateY = ((x - centerX) / centerX) * 10;
-
-    glassCardRef.current.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.02)`;
-    glassCardRef.current.style.transition = 'transform 0.1s ease-out';
-
-  };
-
-  const handleMouseLeave = () => {
-    if (!glassCardRef.current) return;
-    glassCardRef.current.style.transform = 'rotateX(5deg) rotateY(-5deg) scale(1)';
-    glassCardRef.current.style.transition = 'transform 0.5s ease-out';
-  };
-
   return (
-    <>
-      <div className="blob blob-1"></div>
-      <div className="blob blob-2"></div>
+    <div className="bg-mesh min-h-screen relative selection:bg-blue-200">
 
-      <header className="header-container">
-        <div className="logo">SK<span className="dot">.</span></div>
-        <nav className="nav-pill">
-          <ul className="nav-pill-links">
-            <li><a href="#about">About</a></li>
-            <li><a href="#projects">Projects</a></li>
-            <li><a href="#skills">Skills</a></li>
-          </ul>
-        </nav>
-        <div className="header-actions">
-          <a href="#contact" className="contact-btn">Hire Me</a>
-          <button className="mobile-menu-btn" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
-            {isMobileMenuOpen ? <FaTimes /> : <FaBars />}
-          </button>
-        </div>
-      </header>
-
-      <div className={`mobile-menu-overlay ${isMobileMenuOpen ? 'open' : ''}`}>
-        <ul className="mobile-menu-links">
-          <li><a href="#about" onClick={() => setIsMobileMenuOpen(false)}>About</a></li>
-          <li><a href="#projects" onClick={() => setIsMobileMenuOpen(false)}>Projects</a></li>
-          <li><a href="#skills" onClick={() => setIsMobileMenuOpen(false)}>Skills</a></li>
-          <li><a href="#contact" onClick={() => setIsMobileMenuOpen(false)}>Contact</a></li>
-        </ul>
-      </div>
-
-      <main className="hero-section">
-        <div className="hero-content animate-on-scroll">
-          <h2 className="greeting">Hello, I'm</h2>
-          <h1 className="name">Sinan K</h1>
-          <div className="role-container">
-            <span className="static-text">I am a </span>
-            <Typewriter roles={roles} />
-            <span className="cursor">|</span>
+      {/* Navbar */}
+      <motion.header
+        initial={{ y: -100 }}
+        animate={{ y: 0 }}
+        transition={{ type: "spring", stiffness: 100, damping: 20 }}
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled ? 'px-0 py-0' : 'px-6 py-4'}`}
+      >
+        <div className={`mx-auto flex items-center justify-between transition-all duration-300 backdrop-blur-xl ${
+          isScrolled
+            ? 'w-full max-w-full px-8 py-4 bg-white/90 border-b border-white/50 shadow-sm'
+            : 'max-w-6xl px-6 py-3 rounded-full bg-white/60 border border-white/60 shadow-[0_8px_32px_rgba(0,0,0,0.06)]'
+        }`}>
+          <div className="w-10 h-10 md:w-11 md:h-11 rounded-full overflow-hidden border border-slate-200 shadow-sm shrink-0 flex items-center justify-center bg-[#0B0F14]">
+            <img
+              src="/me.png"
+              alt="Sinan K."
+              className="min-w-[220%] min-h-[220%] object-cover"
+              style={{ objectPosition: 'center 0%', transform: 'translate(4px, 16px)' }}
+            />
           </div>
-          <p className="description">
-            Transforming ideas into exceptional digital experiences. I specialize in building robust, scalable applications across the full stack.
-          </p>
-          <div className="cta-buttons">
-            <a href="#projects" className="btn-primary">View My Work</a>
-            <a href="#contact" className="btn-secondary">Get In Touch</a>
+
+          <div className="flex items-center gap-4">
+            <a href="mailto:msinankavala786@gmail.com" className="group relative hidden md:inline-flex px-5 py-2 text-sm font-medium text-white bg-blue-600 rounded-full transition-all shadow-lg shadow-blue-500/30 overflow-hidden">
+              <span className="relative z-10 transition-colors duration-300 group-hover:text-blue-700">Hire Me</span>
+              <div className="absolute inset-0 bg-white rounded-full origin-right scale-x-0 transition-transform duration-300 ease-out group-hover:origin-left group-hover:scale-x-100" />
+            </a>
+            <button
+              className="md:hidden text-slate-800 p-2"
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            >
+              {isMobileMenuOpen ? <FaTimes size={24} /> : <FaBars size={24} />}
+            </button>
           </div>
         </div>
+      </motion.header>
 
-        <div
-          className="hero-visual animate-on-scroll"
-          ref={heroVisualRef}
-          onMouseMove={handleMouseMove}
-          onMouseLeave={handleMouseLeave}
+      {/* Mobile Menu */}
+      <AnimatePresence>
+        {isMobileMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            className="fixed inset-0 z-40 bg-white/95 backdrop-blur-3xl flex flex-col items-center justify-center gap-8"
+          >
+            <a
+              href="mailto:msinankavala786@gmail.com"
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="text-3xl font-bold text-slate-800 hover:text-blue-600 transition-colors"
+            >
+              Hire Me
+            </a>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Hero Section */}
+      <main className="sticky top-0 z-0 px-8 md:px-16 overflow-visible max-w-[1400px] mx-auto flex flex-col md:flex-row items-center gap-12 md:gap-20 h-screen justify-center">
+
+        {/* Left Side */}
+        <motion.div
+          style={{ y: heroTextY }}
+          className="flex-1 z-10 flex flex-col justify-center pt-24 md:pt-0"
         >
-          <div className="glass-card" ref={glassCardRef}>
-            <div className="code-header">
-              <span className="circle red"></span>
-              <span className="circle yellow"></span>
-              <span className="circle green"></span>
-            </div>
-            <pre className="code-snippet"><code>
-              <span className="keyword">const</span> developer <span className="operator">=</span> {'{\n'}
-              {'  name: '}<span className="string">'Sinan K'</span>{',\n'}
-              {'  skills: [\n'}
-              {'    '}<span className="string">'Web Development'</span>{',\n'}
-              {'    '}<span className="string">'Full Stack'</span>{',\n'}
-              {'    '}<span className="string">'App Development'</span>{'\n'}
-              {'  ],\n'}
-              {'  hardWorker: '}<span className="boolean">true</span>{',\n'}
-              {'  buildAwesomeThings: '}<span className="keyword">function</span>{'() {\n'}
-              {'    '}<span className="keyword">return</span> <span className="string">'🚀'</span>{';\n'}
-              {'  }\n'}
-              {'}'};
-            </code></pre>
+          <div className="w-fit">
+            <motion.h1
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.1 }}
+              className="font-sans font-black text-[#0B0F14] tracking-wide lowercase mb-6 leading-[0.88]"
+              style={{ fontSize: 'clamp(52px, 8vw, 110px)', fontFamily: "'Outfit', sans-serif" }}
+            >
+              software<br />architect
+            </motion.h1>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+              className="flex justify-end w-full mb-8"
+            >
+              <RotatingText />
+            </motion.div>
           </div>
-        </div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.3 }}
+            className="flex items-center gap-3 mb-8"
+          >
+            {[
+              { icon: <FaReact size={20} />, color: "hover:border-[#61DAFB] hover:text-[#61DAFB]" },
+              { icon: <SiFlutter size={20} />, color: "hover:border-[#54C5F8] hover:text-[#54C5F8]" },
+              { icon: <FaNodeJs size={20} />, color: "hover:border-[#339933] hover:text-[#339933]" },
+              { icon: <SiMongodb size={20} />, color: "hover:border-[#47A248] hover:text-[#47A248]" }
+            ].map((tech, i) => (
+              <div key={i} className={`w-11 h-11 rounded-full border-2 border-slate-300 flex items-center justify-center text-slate-700 transition-all cursor-default ${tech.color}`}>
+                {tech.icon}
+              </div>
+            ))}
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, scaleX: 0 }}
+            animate={{ opacity: 1, scaleX: 1 }}
+            transition={{ duration: 0.6, delay: 0.4 }}
+            className="h-px w-full bg-slate-200 mb-8 origin-left"
+          />
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.5 }}
+            className="flex gap-12"
+          >
+            <div>
+              <p className="font-black text-[#0B0F14] tracking-tighter italic mb-1" style={{ fontSize: 'clamp(28px, 4vw, 44px)' }}>99.9%</p>
+              <p className="text-xs text-slate-500 leading-tight max-w-[140px]">Production uptime achieved for mission-critical systems</p>
+            </div>
+            <div>
+              <p className="font-black text-[#0B0F14] tracking-tighter italic mb-1" style={{ fontSize: 'clamp(28px, 4vw, 44px)' }}>+15k</p>
+              <p className="text-xs text-slate-500 leading-tight max-w-[140px]">Hours of engineering, flawless user experiences</p>
+            </div>
+          </motion.div>
+        </motion.div>
+
+        {/* Right Side: Image Card */}
+        <motion.div
+          initial={{ opacity: 0, x: 30 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.8, delay: 0.3 }}
+          className="relative flex-shrink-0"
+          style={{
+            width: 'clamp(480px, 52vw, 620px)',
+            height: 'clamp(480px, 52vw, 620px)',
+            overflow: 'visible',
+            y: heroImageY,
+            scale: heroImageScale
+          }}
+        >
+          <div className="absolute inset-4 bg-[#2563EB]/40 rounded-full blur-3xl pointer-events-none" />
+
+          <svg
+            viewBox="0 0 2048 2048"
+            className="absolute inset-0 w-full h-full"
+            style={{ overflow: 'visible' }}
+          >
+            <defs>
+              <clipPath id="frameClip">
+                <path d="M 465.664 1737.85 C 461.152 1726.55 456.57 1715.26 453.472 1703.4 C 442.427 1661.14 445.802 1614 445.67 1570.47 C 446.147 1550.7 445.009 1530.82 445.222 1511.08 C 445.799 1457.39 452.629 1410.08 418.048 1364.54 C 397.424 1337.06 366.088 1319.64 331.858 1316.62 C 309.959 1314.77 289.819 1316.23 268.3 1309.34 C 213.283 1292.17 178.463 1237.91 174.763 1181.79 C 171.92 1138.67 173.971 1093.6 173.689 1050 L 173.358 729.5 L 173.325 501.302 L 173.195 435.446 C 173.102 411.229 172.17 393.495 176.069 369.232 C 182.442 329.615 199.416 292.462 225.193 261.71 C 265.075 214.102 322.633 184.798 384.593 180.553 C 407.843 178.732 446.296 179.905 470.717 179.921 L 625.641 179.85 L 1125 179.888 L 1517 179.807 L 1631.31 179.802 C 1651.83 179.8 1681.3 178.943 1701.13 181.075 C 1729.96 183.932 1757.17 195.745 1778.95 214.856 C 1819.59 250.137 1826.06 291.342 1826.57 341.738 C 1826.9 374.502 1846.13 406.925 1875.58 421.216 C 1893.23 429.783 1912.61 437.596 1927.51 451.052 C 1953.9 475.35 1958.63 495.364 1960.7 529.288 C 1959.76 536.32 1960.2 551.64 1960.16 559.53 L 1960.11 620.076 L 1960.4 814.049 L 1960.41 1433.38 L 1960.34 1561.17 C 1960.31 1601.48 1962.86 1644.09 1953.14 1683 C 1940.08 1735.27 1908.5 1779.34 1865.92 1811.82 C 1856.46 1819.03 1828.42 1837.79 1817.2 1840.54 C 1797 1852.5 1751.71 1862.85 1727.77 1864.31 C 1705.97 1865.64 1681.17 1865.28 1659.07 1865.27 L 1552.32 1865.25 L 1220.51 1865.29 L 848.803 1865.25 L 741.569 1865.27 C 693.138 1865.33 637.029 1868.84 591.808 1849.68 C 587.648 1848.75 576.933 1844.01 572.766 1842.1 C 536.49 1825.36 505.301 1799.3 482.377 1766.58 C 477.278 1759.45 469.873 1742.31 465.664 1737.85 Z" />
+              </clipPath>
+            </defs>
+
+            <path
+              d="M 465.664 1737.85 C 461.152 1726.55 456.57 1715.26 453.472 1703.4 C 442.427 1661.14 445.802 1614 445.67 1570.47 C 446.147 1550.7 445.009 1530.82 445.222 1511.08 C 445.799 1457.39 452.629 1410.08 418.048 1364.54 C 397.424 1337.06 366.088 1319.64 331.858 1316.62 C 309.959 1314.77 289.819 1316.23 268.3 1309.34 C 213.283 1292.17 178.463 1237.91 174.763 1181.79 C 171.92 1138.67 173.971 1093.6 173.689 1050 L 173.358 729.5 L 173.325 501.302 L 173.195 435.446 C 173.102 411.229 172.17 393.495 176.069 369.232 C 182.442 329.615 199.416 292.462 225.193 261.71 C 265.075 214.102 322.633 184.798 384.593 180.553 C 407.843 178.732 446.296 179.905 470.717 179.921 L 625.641 179.85 L 1125 179.888 L 1517 179.807 L 1631.31 179.802 C 1651.83 179.8 1681.3 178.943 1701.13 181.075 C 1729.96 183.932 1757.17 195.745 1778.95 214.856 C 1819.59 250.137 1826.06 291.342 1826.57 341.738 C 1826.9 374.502 1846.13 406.925 1875.58 421.216 C 1893.23 429.783 1912.61 437.596 1927.51 451.052 C 1953.9 475.35 1958.63 495.364 1960.7 529.288 C 1959.76 536.32 1960.2 551.64 1960.16 559.53 L 1960.11 620.076 L 1960.4 814.049 L 1960.41 1433.38 L 1960.34 1561.17 C 1960.31 1601.48 1962.86 1644.09 1953.14 1683 C 1940.08 1735.27 1908.5 1779.34 1865.92 1811.82 C 1856.46 1819.03 1828.42 1837.79 1817.2 1840.54 C 1797 1852.5 1751.71 1862.85 1727.77 1864.31 C 1705.97 1865.64 1681.17 1865.28 1659.07 1865.27 L 1552.32 1865.25 L 1220.51 1865.29 L 848.803 1865.25 L 741.569 1865.27 C 693.138 1865.33 637.029 1868.84 591.808 1849.68 C 587.648 1848.75 576.933 1844.01 572.766 1842.1 C 536.49 1825.36 505.301 1799.3 482.377 1766.58 C 477.278 1759.45 469.873 1742.31 465.664 1737.85 Z"
+              fill="#2563EB"
+            />
+
+            <image
+              href="/me.png"
+              x="250"
+              y="150"
+              width="2300"
+              height="2100"
+              clipPath="url(#frameClip)"
+              preserveAspectRatio="xMidYMax meet"
+            />
+          </svg>
+
+          <div
+            className="absolute text-white italic font-light select-none pointer-events-none"
+            style={{
+              top: '17%', left: '18%',
+              fontFamily: "'Space Grotesk', sans-serif",
+              fontSize: 'clamp(1.6rem, 3.2vw, 2.6rem)',
+              lineHeight: 1,
+              zIndex: 10,
+              letterSpacing: '-0.02em'
+            }}
+          >
+            Sinan K.
+          </div>
+
+          <ResumeIsland />
+          <SocialIsland />
+
+        </motion.div>
       </main>
 
-      <section id="about" className="about-section animate-on-scroll">
-        <h2 className="section-title">About <span>Me</span></h2>
-        <div className="about-content">
-          <div className="about-terminal-wrapper animate-on-scroll">
-            <InteractiveTerminal />
-          </div>
-          <div className="about-text">
-            <h3 className="animate-on-scroll" style={{ transitionDelay: '0.1s' }}>
-              I'm a passionate developer building the future of the web.
-            </h3>
-            <p className="animate-on-scroll" style={{ transitionDelay: '0.2s' }}>
-              With a strong foundation in full-stack development, I specialize in crafting beautiful,
-              responsive, and highly performant applications. My journey in tech is driven by an
-              insatiable curiosity and a desire to solve complex problems through elegant code.
-            </p>
-            <p className="animate-on-scroll" style={{ transitionDelay: '0.3s' }}>
-              When I'm not coding, you can find me exploring new technologies, refining my design
-              skills, or working on personal projects that push the boundaries of what's possible on the web.
-            </p>
-            <div className="stats-container animate-on-scroll" style={{ transitionDelay: '0.4s' }}>
-              <div className="stat-item">
-                <span className="stat-number">3+</span>
-                <span className="stat-label">Years Experience</span>
-              </div>
-              <div className="stat-item">
-                <span className="stat-number">20+</span>
-                <span className="stat-label">Projects Completed</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Projects Section */}
-      <section id="projects" className="projects-scroll-container" ref={projectsSectionRef}>
-        <div className="projects-sticky-wrapper">
-          <h2 className="section-title projects-title animate-on-scroll">Featured <span>Projects</span></h2>
-          
-          <div className="projects-horizontal-track" ref={projectsTrackRef}>
-            {projectsData.map((project, index) => (
-              <ProjectCard key={index} project={project} />
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Timeline Section */}
-      <section id="timeline" className="timeline-section" ref={timelineSectionRef}>
-        <h2 className="section-title">My <span>Journey</span></h2>
-
-        <div className="timelines-wrapper">
-
-          <div className="timeline-column" ref={educationRef}>
-            <h3 className="column-title">Education</h3>
-            <div className="timeline-container single-column">
-              <div className="timeline-progress-line" style={{ height: `${educationProgress}%` }}></div>
-
-              <div className="timeline-item animate-on-scroll">
-                <div className="timeline-content">
-                  <span className="timeline-date">2025 - 2028</span>
-                  <h3 className="timeline-title">BCA</h3>
-                  <p className="timeline-subtitle">Bachelor of Computer Applications</p>
-                  <p className="timeline-desc">Pursuing comprehensive studies in computer science, software engineering, and modern application development.</p>
-                </div>
-              </div>
-
-              <div className="timeline-item animate-on-scroll">
-                <div className="timeline-content">
-                  <span className="timeline-date">2025 - 2026</span>
-                  <h3 className="timeline-title">Software Development</h3>
-                  <p className="timeline-subtitle">Independent Learning</p>
-                  <p className="timeline-desc">Mastering advanced software engineering principles, system design, and building scalable applications.</p>
-                </div>
-              </div>
-
-              <div className="timeline-item animate-on-scroll">
-                <div className="timeline-content">
-                  <span className="timeline-date">2024 - 2025</span>
-                  <h3 className="timeline-title">App Development</h3>
-                  <p className="timeline-subtitle">Independent Learning</p>
-                  <p className="timeline-desc">Focused on building cross-platform mobile experiences, learning modern frameworks, and understanding mobile user interfaces.</p>
-                </div>
-              </div>
-
-              <div className="timeline-item animate-on-scroll">
-                <div className="timeline-content">
-                  <span className="timeline-date">2023 - 2024</span>
-                  <h3 className="timeline-title">Web Development</h3>
-                  <p className="timeline-subtitle">Independent Learning</p>
-                  <p className="timeline-desc">Started my journey in tech by mastering HTML, CSS, JavaScript, and building my first responsive websites.</p>
-                </div>
-              </div>
-
-            </div>
-          </div>
-
-          <div className="timeline-column" ref={experienceRef}>
-            <h3 className="column-title">Experience</h3>
-            <div className="timeline-container single-column">
-              <div className="timeline-progress-line" style={{ height: `${experienceProgress}%` }}></div>
-
-              <div className="timeline-item animate-on-scroll">
-                <div className="timeline-content">
-                  <span className="timeline-date">2026 - Present</span>
-                  <h3 className="timeline-title">Founder & Lead Developer</h3>
-                  <p className="timeline-subtitle">Etriq</p>
-                  <p className="timeline-desc">Leading the development of innovative digital solutions and building my own brand. Overseeing full-stack projects from ideation to deployment.</p>
-                </div>
-              </div>
-
-              <div className="timeline-item animate-on-scroll">
-                <div className="timeline-content">
-                  <span className="timeline-date">2024 - 2026</span>
-                  <h3 className="timeline-title">Full Stack Developer</h3>
-                  <p className="timeline-subtitle">Tech Solutions Inc</p>
-                  <p className="timeline-desc">Developed scalable web applications, led a small team of frontend developers, and successfully migrated a monolithic architecture to microservices.</p>
-                </div>
-              </div>
-
-              <div className="timeline-item animate-on-scroll">
-                <div className="timeline-content">
-                  <span className="timeline-date">2023 - 2024</span>
-                  <h3 className="timeline-title">Junior Web Developer</h3>
-                  <p className="timeline-subtitle">Creative Agency</p>
-                  <p className="timeline-desc">Built responsive landing pages, optimized website performance, and collaborated closely with UI/UX designers to bring mockups to life.</p>
-                </div>
-              </div>
-
-            </div>
-          </div>
-
-        </div>
-      </section>
-
-      <section id="skills" className="skills-section">
-        <div className="skills-bg-pattern"></div>
-        <h2 className="section-title animate-on-scroll">My <span>Skills</span></h2>
-
-        <div className="skills-container animate-on-scroll">
-          {skillCategories.map((category, idx) => (
-            <div className="skill-category animate-on-scroll" key={idx}>
-              <h3 className="category-title">{category.title}</h3>
-              <div className="skill-grid">
-                {category.skills.map((skill, index) => (
-                  <div className="skill-card tooltip-container" key={index}>
-                    <div className="skill-icon">{skill.icon}</div>
-                    <span className="tooltip">{skill.name}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* Contact Section */}
-      <section id="contact" className="contact-section">
-        <h2 className="section-title animate-on-scroll">Get In <span>Touch</span></h2>
-        <div className="contact-content animate-on-scroll">
-          <div className="contact-info">
-            <h3>Let's build something awesome together!</h3>
-            <p>Feel free to reach out to me for any inquiries, project collaborations, or just to say hi.</p>
-            <div className="contact-details">
-              <div className="contact-detail-item">
-                <span className="contact-icon"><FaPhoneAlt /></span>
-                <a href="tel:+919846170136">+91 98461 70136</a>
-              </div>
-              <div className="contact-detail-item">
-                <span className="contact-icon"><FaWhatsapp /></span>
-                <a href="https://wa.me/919846170136" target="_blank" rel="noreferrer">WhatsApp: 9846170136</a>
-              </div>
-              <div className="contact-detail-item">
-                <span className="contact-icon"><FaEnvelope /></span>
-                <a href="mailto:msinankavala786@gmail.com">msinankavala786@gmail.com</a>
-              </div>
-            </div>
-          </div>
-          
-          <div className="contact-visual">
-            <div className="social-card">
-              <div className="social-background"></div>
-              <div className="social-logo contact-prompt">
-                <span>Contact Me</span>
-              </div>
-              <a href="https://instagram.com/sinan.avl" target="_blank" rel="noreferrer" className="social-box social-box1">
-                <span className="social-icon"><FaInstagram /></span>
-              </a>
-              <a href="https://github.com/Sinxn-coder" target="_blank" rel="noreferrer" className="social-box social-box2">
-                <span className="social-icon"><FaGithub /></span>
-              </a>
-              <a href="https://wa.me/919846170136" target="_blank" rel="noreferrer" className="social-box social-box3">
-                <span className="social-icon"><FaWhatsapp /></span>
-              </a>
-              <a href="mailto:msinankavala786@gmail.com" className="social-box social-box4">
-                <span className="social-icon"><FaEnvelope /></span>
-              </a>
-            </div>
-          </div>
-        </div>
-      </section>
-    </>
+    </div>
   );
 }

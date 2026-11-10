@@ -2,11 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Sinan K | Developer Portfolio",
-  description: "Portfolio of Sinan K, Full Stack & App Developer.",
-  icons: {
-    icon: "/me.webp",
-  },
+  title: "Sinan K | Freelance Web & App Developer in Perambra, Kozhikode",
+  description: "I'm Sinan K, a freelance web developer and software architect based in Perambra, Kozhikode. I build scalable SaaS products and fast mobile apps.",
 };
 
 export default function RootLayout({
@@ -17,9 +14,6 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet" />
       </head>
       <body>
         {children}
