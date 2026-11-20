@@ -1,5 +1,6 @@
 "use client";
 import React, { useRef, useState, useEffect } from 'react';
+import Image from 'next/image';
 
 const roles = [
   "Web Developer",
@@ -46,31 +47,7 @@ function Typewriter({ roles }: { roles: string[] }) {
 }
 
 export const Hero = () => {
-  const glassCardRef = useRef<HTMLDivElement>(null);
   const heroVisualRef = useRef<HTMLDivElement>(null);
-
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!heroVisualRef.current || !glassCardRef.current) return;
-
-    const rect = heroVisualRef.current.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-
-    const centerX = rect.width / 2;
-    const centerY = rect.height / 2;
-
-    const rotateX = ((y - centerY) / centerY) * -10;
-    const rotateY = ((x - centerX) / centerX) * 10;
-
-    glassCardRef.current.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.02)`;
-    glassCardRef.current.style.transition = 'transform 0.1s ease-out';
-  };
-
-  const handleMouseLeave = () => {
-    if (!glassCardRef.current) return;
-    glassCardRef.current.style.transform = 'rotateX(5deg) rotateY(-5deg) scale(1)';
-    glassCardRef.current.style.transition = 'transform 0.5s ease-out';
-  };
 
   return (
     <main className="hero-section">
@@ -78,49 +55,43 @@ export const Hero = () => {
         <div className="blob blob-1"></div>
         <div className="blob blob-2"></div>
       </div>
-      <div className="hero-content animate-on-scroll">
-        <h2 className="greeting">Hello, I'm</h2>
-        <h1 className="name">Sinan K</h1>
-        <div className="role-container">
-          <span className="static-text">I am a </span>
-          <Typewriter roles={roles} />
-          <span className="cursor">|</span>
-        </div>
-        <p className="description">
-          I build fast, scalable web applications using modern technologies like React, Node.js, and Next.js.
-        </p>
-        <div className="cta-buttons">
-          <a href="#projects" className="btn-primary">View My Work</a>
-          <a href="#contact" className="btn-secondary">Get In Touch</a>
-        </div>
-      </div>
-
-      <div
-        className="hero-visual animate-on-scroll"
-        ref={heroVisualRef}
-        onMouseMove={handleMouseMove}
-        onMouseLeave={handleMouseLeave}
-      >
-        <div className="glass-card" ref={glassCardRef}>
-          <div className="code-header">
-            <span className="circle red"></span>
-            <span className="circle yellow"></span>
-            <span className="circle green"></span>
+      <div className="hero-stage">
+        <div className="hero-content animate-on-scroll">
+          <h2 className="greeting">Hello, I&apos;m</h2>
+          <h1 className="name">Sinan<br />K</h1>
+          <div className="role-container">
+            <span className="static-text">I am a </span>
+            <Typewriter roles={roles} />
+            <span className="cursor">|</span>
           </div>
-          <pre className="code-snippet"><code>
-            <span className="keyword">const</span> developer <span className="operator">=</span> {'{\n'}
-            {'  name: '}<span className="string">'Sinan K'</span>{',\n'}
-            {'  skills: [\n'}
-            {'    '}<span className="string">'Web Development'</span>{',\n'}
-            {'    '}<span className="string">'Full Stack'</span>{',\n'}
-            {'    '}<span className="string">'App Development'</span>{'\n'}
-            {'  ],\n'}
-            {'  hardWorker: '}<span className="boolean">true</span>{',\n'}
-            {'  buildAwesomeThings: '}<span className="keyword">function</span>{'() {\n'}
-            {'    '}<span className="keyword">return</span> <span className="string">'🚀'</span>{';\n'}
-            {'  }\n'}
-            {'}'};
-          </code></pre>
+          <a href="#projects" className="hero-work-link">Explore my work <span aria-hidden="true">↗</span></a>
+        </div>
+
+        <div className="hero-portrait-wash" aria-hidden="true"></div>
+        <div className="hero-visual animate-on-scroll" ref={heroVisualRef}>
+          <div className="hero-portrait-frame">
+            <Image
+              src="/me.png"
+              alt="Sinan K"
+              fill
+              priority
+              sizes="(max-width: 768px) 90vw, 55vw"
+              className="hero-portrait"
+            />
+          </div>
+          <span className="portrait-index">01 / CREATIVE DEVELOPER</span>
+        </div>
+
+        <aside className="hero-side-note animate-on-scroll">
+          <p className="hero-side-heading">Digital experiences,<br />built with intention.</p>
+          <p className="hero-side-copy">I create thoughtful web experiences with clean code, sharp details, and a focus on how things feel to use.</p>
+          <a href="#contact" className="hero-contact-link">Let&apos;s talk <span aria-hidden="true">↗</span></a>
+        </aside>
+
+        <div className="hero-bottomline">
+          <span>BASED IN INDIA</span>
+          <span>WEB · FULL STACK · APP</span>
+          <span>SCROLL TO EXPLORE ↓</span>
         </div>
       </div>
     </main>

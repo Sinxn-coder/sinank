@@ -73,28 +73,44 @@ const skillCategories = [
 
 const projectsData = [
   {
-    title: "Etriq App Store",
-    description: "A premium, centralized marketplace for discovering and managing enterprise-grade applications, built with a stunning Liquid Glass UI.",
+    title: "Liblet — Library Management System",
+    description: "A digital library management solution designed to streamline book inventory, circulation, reservations, renewals, and fine management.",
     icon: <FaShoppingCart />,
-    tags: ["React", "Next.js", "Stripe", "Framer Motion"]
+    tags: ["Flutter", "Supabase", "PostgreSQL"],
+    highlights: "Book accession tracking · Student and faculty management · Issue/return workflows · Reservations · Role-based security · Reporting",
+    links: [{ label: "Live site", href: "https://liblet.etriq.online" }, { label: "Mobile repository", href: "https://github.com/Sinxn-coder/libby" }]
   },
   {
-    title: "Etriq LMS",
-    description: "A comprehensive Learning Management System designed for modern educational institutions with real-time video and course tracking.",
+    title: "Aynal — Mosque Management System",
+    description: "A community-focused management platform that digitizes mosque administration, family records, financial contributions, and communication.",
     icon: <FaHospital />,
-    tags: ["Next.js", "Node.js", "PostgreSQL", "WebRTC"]
+    tags: ["Flutter", "Supabase", "PostgreSQL", "RLS"],
+    highlights: "Family-based accounts · Secure authentication · Family profiles · Financial records · Announcements · Administrator controls",
+    links: [{ label: "GitHub repository", href: "https://github.com/Sinxn-coder/aynal_app" }]
   },
   {
-    title: "MiniBakes",
-    description: "A delightful e-commerce platform for a boutique bakery, featuring custom cake orders, secure checkout, and inventory management.",
+    title: "VaaniQA — AI Voice Agent Testing Platform",
+    description: "An AI-powered quality assurance platform for testing and evaluating voice agents through structured scenarios, transcription analysis, and performance scoring.",
+    icon: <FaPhoneAlt />,
+    tags: ["Voice AI", "Speech Transcription", "Automated Evaluation"],
+    highlights: "Malayalam-first testing · Scenario libraries · Automated evaluations · Human review · Dataset management",
+    links: [{ label: "GitHub repository", href: "https://github.com/Sinxn-coder/VaaniQA" }]
+  },
+  {
+    title: "MiniBakes — E-commerce & Ordering Platform",
+    description: "A custom online ordering platform developed for a Malta-based bakery, with a customer-facing storefront and a dedicated administration system.",
     icon: <FaShoppingCart />,
-    tags: ["React", "Next.js", "Tailwind CSS", "Stripe"]
+    tags: ["Full-Stack", "E-commerce", "Client Project"],
+    highlights: "Product catalog · Online ordering · Order management · Admin dashboard · SEO",
+    links: [{ label: "Live website", href: "https://minibakes.shop" }]
   },
   {
-    title: "PricePilot",
-    description: "An AI-powered dynamic pricing engine that tracks market trends and competitor data to optimize product pricing in real-time.",
-    icon: <FaChartLine />,
-    tags: ["React", "Python", "TensorFlow", "AWS"]
+    title: "DevDeck — Developer Desktop Workspace",
+    description: "A cross-platform desktop application built to provide developers with a unified workspace for local development tools and workflows.",
+    icon: <FaBuilding />,
+    tags: ["Tauri 2", "Rust", "React", "SQLite"],
+    highlights: "Native desktop architecture · React interface · Rust backend commands · Local SQLite storage",
+    links: [{ label: "GitHub repository", href: "https://github.com/Sinxn-coder/devdeck" }]
   }
 ];
 
@@ -134,18 +150,48 @@ const ProjectCard = ({ project }: { project: any }) => {
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
     >
-      <div className="project-image-container icon-mode">
-        <div className="project-icon-wrapper">
-          {project.icon}
+      <div className="project-card-inner">
+        <div className="project-card-face project-card-front">
+          <div className="project-image-container icon-mode">
+            <div className="project-icon-wrapper">
+              {project.icon}
+            </div>
+          </div>
+          <div className="project-content">
+            <span className="project-kicker">SELECTED PROJECT</span>
+            <h3 className="project-title">{project.title}</h3>
+            <div className="project-tags">
+              {project.tags.map((tag: string, i: number) => (
+                <span key={i} className="project-tag">{tag}</span>
+              ))}
+            </div>
+            <div className="project-card-links">
+              {project.links.map((link: { label: string; href: string }) => (
+                <a key={link.href} href={link.href} target="_blank" rel="noreferrer">
+                  {link.label} <span aria-hidden="true">↗</span>
+                </a>
+              ))}
+            </div>
+            <span className="project-flip-hint">HOVER TO EXPLORE ↻</span>
+          </div>
         </div>
-      </div>
-      <div className="project-content">
-        <h3 className="project-title">{project.title}</h3>
-        <p className="project-desc">{project.description}</p>
-        <div className="project-tags">
-          {project.tags.map((tag: string, i: number) => (
-            <span key={i} className="project-tag">{tag}</span>
-          ))}
+        <div className="project-card-face project-card-back">
+          <span className="project-kicker">PROJECT NOTES</span>
+          <h3 className="project-title">{project.title}</h3>
+          <p className="project-desc">{project.description}</p>
+          <p className="project-highlights"><strong>Highlights</strong>{project.highlights}</p>
+          <div className="project-tags">
+            {project.tags.map((tag: string, i: number) => (
+              <span key={i} className="project-tag">{tag}</span>
+            ))}
+          </div>
+          <div className="project-back-links">
+            {project.links.map((link: { label: string; href: string }) => (
+              <a key={link.href} href={link.href} target="_blank" rel="noreferrer">
+                {link.label} <span aria-hidden="true">↗</span>
+              </a>
+            ))}
+          </div>
         </div>
       </div>
     </div>
